@@ -1,0 +1,5 @@
+mysql -u group16 group16 -p  < tbl_delete.sql;
+mysql -u group16 group16 -p  < tbl_create.sql;
+mysql -u group16 group16 -p  < load_data.sql;
+mysql -u group16 group16 -p  < tbl_counter.sql;
+

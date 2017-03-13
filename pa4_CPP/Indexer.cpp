@@ -1,0 +1,132 @@
+#include "Indexer.h"
+
+#include <fstream>
+
+using namespace std;
+using std::ifstream;
+using std::ostream;
+
+void idf(string& word, vector< vector<string> >& docs, 
+	unordered_map <string, word_data>& word_map);
+int occurance_time(string& word, vector<string>& doc);
+void tf(string& word, vector< vector<string> >& docs, 
+	unordered_map <string, word_data>& word_map);
+
+// Reads content from the supplied input file stream, and transforms the
+// content into the actual on-disk inverted index file.
+
+void Indexer::index(ifstream& content, ostream& outfile)
+{
+	vector<string> words;
+	vector< vector<string> > docs;
+	vector<string> stop_words;
+	static const char arr[] = {'(', ')', ',', '!', '/', '&', ':', '-', '#', '"'};
+	vector<char> punctuations(arr, arr + sizeof(arr) / sizeof(arr[0]) );
+
+	ifstream input;
+	input.open("stop_words.txt");
+	while(input.good()) {
+		string tempString;
+		getline(input, tempString);
+		stop_words.push_back(tempString);
+	}
+
+	input.close();
+
+	// vector<double> idf;
+	while(content.good()) {
+		string tempString;
+		string tempWord;
+		getline(content, tempString);
+		if (tempString.length() >= 1) {
+			transform(tempString.begin(), tempString.end(), tempString.begin(), ::tolower);
+			for (unsigned int i = 0; i < tempString.size(); ++i) {
+				if (find(punctuations.begin(), punctuations.end(), tempString[i]) != punctuations.end()	) {
+					tempString.replace(i, 1, " ");
+				}
+			}
+			istringstream tempStringStream(tempString);	
+			vector<string> doc_temp;
+			while(tempStringStream >> tempWord) {
+				doc_temp.push_back(tempWord);
+				words.push_back(tempWord);
+			}	
+			docs.push_back(doc_temp);	
+		}
+	}
+
+	content.close();
+
+	sort(words.begin(), words.end());
+	words.erase( unique( words.begin(), words.end() ), words.end() );
+
+	for (unsigned int i = 0; i < words.size(); ++i) {
+		if (find(stop_words.begin(), stop_words.end(), words[i]) != stop_words.end()) {
+			words.erase(words.begin() + i);
+			i--;
+		}
+	}
+
+	unordered_map <string, word_data> word_map;
+
+	for (unsigned int i = 0; i < words.size(); ++i) {
+		idf(words[i], docs, word_map);
+	}
+
+	for (unsigned int i = 0; i < words.size(); ++i) {
+		tf(words[i], docs, word_map);
+	}
+
+	for (unsigned int i = 0; i < words.size(); ++i) {
+		string word = words[i];
+		outfile << word << " " << word_map[word].idf << " " << word_map[word].total << " ";
+		for (auto& x: word_map[word].occur) {
+			outfile << x.first + 1 << " " << x.second.num << " " << x.second.factor << " ";
+		}
+		outfile << endl;
+	}
+}
+
+void idf(string& word, vector< vector<string> >& docs, 
+	unordered_map <string, word_data>& word_map) {
+	double total = (double)docs.size();
+	double count = 0;
+	int total_occur = 0;
+
+	for (unsigned int i = 0; i < docs.size(); ++i) {
+		int num = occurance_time(word, docs[i]);
+		if (num > 0) {
+			word_map[word].occur[i].num = num;
+			total_occur += num;
+			count++;
+		}
+	}
+	word_map[word].total = total_occur;
+	word_map[word].idf = log10(total / count);
+}
+
+int occurance_time(string& word, vector<string>& doc) {
+	int count = 0;
+	for (unsigned int i = 0; i < doc.size(); ++i) {
+		if (doc[i] == word) {
+			count++;
+		}
+	}
+	return count;
+}
+
+void tf(string& word, vector< vector<string> >& docs, 
+	unordered_map <string, word_data>& word_map) {
+
+	for (auto& x:word_map[word].occur) {
+		int doc_id = x.first;
+		vector<string> doc = docs[doc_id];
+		double total = 0;
+		for (unsigned int j = 0; j < doc.size(); ++j) {
+			string word_temp = doc[j];
+			total += pow(word_map[word_temp].idf, 2) 
+				* pow(word_map[word_temp].occur[doc_id].num, 2);
+		}
+		word_map[word].occur[doc_id].factor = total;
+	}
+}

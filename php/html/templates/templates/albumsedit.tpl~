@@ -1,0 +1,108 @@
+{* Smarty *}
+
+{extends 'base.tpl'}
+{block name='body'}
+<script>
+    function check() {
+        if (add.title.value.length == 0) {
+            alert("Album name cannot be null");
+            return false;
+        } else {
+            return true;
+        }
+    }
+</script>
+{if $log eq true}
+    <div class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-xs-12 col-sm-9">
+          <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>
+          <div class="jumbotron">
+            <h1>Hello {$username}!</h1>
+            <p>Welcome to Edit Your Albums.</p>
+            <p><a class="btn btn-primary btn-lg" role="button" href="/rgrnke/pa2/albums?username={$username}">Return to Album List &raquo;</a></$
+          </div>
+        </div>
+
+
+      <div class="row">
+      <div class="col-3 col-sm-3 col-lg-3">
+        <h3>Album Name</h3>
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+       	<h3>Access</h3>
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+       	<h3>Edit</h3>
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+       	<h3>Delete</h3>
+      </div>
+      </div>
+      <hr>
+
+      {for $i=0 to $num - 1}
+      <div class="row">
+      <div class="col-3 col-sm-3 col-md-3 col-lg-3">
+         <h4><a href="/rgrnke/pa2/album?id={$albumid{$i}}">{$title{$i}}</a></h4>
+      </div>
+      <div class="col-3 col-sm-3 col-md-3 col-lg-3">
+         <h4>{$access{$i}}</h4>
+      </div>
+      <div class="col-3 col-sm-3 col-md-3 col-lg-3">
+         <h4><a href="/rgrnke/pa2/album/edit?id={$albumid{$i}}">Edit</a></h4>
+      </div>
+      <div class="col-3 col-sm-3 col-md-3 col-lg-3">
+         <form action="/rgrnke/pa2/albums/edit" method="post">
+           <input type="hidden" name="op" value="delete" />
+           <input type="hidden" name="albumid" value={$albumid{$i}} />
+           <input type="submit" value="Delete" />
+         </form>
+      </div>
+      </div>
+      {/for}
+
+      <hr>     
+      <h4> Create New Album: </h4>
+
+      <div class="row">
+      <div class="col-3 col-sm-3 col-lg-3">
+        <form id="add" role="form" name="add" action="/rgrnke/pa2/albums/edit" method="post">
+          <input type="hidden" name="op" value="add" />
+          <input type="hidden" name="username" value="{$username}">
+          <p><input type="text" name="title" /></p>
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+          <div class="radio">
+            <input type="radio" name="access" value="private">Private</br>
+            <input type="radio" name="access" value="public">Public
+          </div>
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+      </div>
+      <div class="col-3 col-sm-3 col-lg-3">
+          <input type="submit" value="Create" onClick="return check();"/>
+        </form>
+      </div>
+      </div>
+
+        </div>
+
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          <div class="list-group">
+            <a href="/rgrnke/pa2" class="list-group-item">Home</a>
+            {if $username}
+            <a href="/rgrnke/pa2/albums?username={$username}" class="list-group-item">My Albums</a>
+            <a href="/rgrnke/pa2/user/edit" class="list-group-item">Edit Account</a>
+            {/if}
+          </div>
+        </div><!--/span-->
+     </div><!--row-->
+   </div>
+{else}
+<h1>You have not logged in or you do not have access to this user's albums.<br> Click <a href="/rgrnke/pa2/login?url=_rgrnke_pa2_albums_edit?username={$username}">here</a> to go to login</h1>
+{/if}
+{/block}

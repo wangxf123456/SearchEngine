@@ -1,0 +1,10 @@
+#!/bin/bash
+export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+
+rm -r ../../invoutput
+make
+../bin/hadoop jar FileCount.jar edu.umich.cse.eecs485.FileCount ../dataset/mining.articles.small.xml output/fileCount
+../bin/hadoop jar InvertedIndex.jar edu.umich.cse.eecs485.InvertedIndex ../dataset/mining.articles.small.xml output/InvertedIndex
+../bin/hadoop jar NormalFactor.jar edu.umich.cse.eecs485.NormalFactor ./output/InvertedIndex/part-r-00000 output/NormalFactor
+../bin/hadoop jar FinalCal.jar edu.umich.cse.eecs485.FinalCal ./output/InvertedIndex/part-r-00000 ../../invoutput
+make clean

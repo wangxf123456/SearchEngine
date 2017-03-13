@@ -1,0 +1,19 @@
+[Fri Oct 31 15:56:30.752166 2014] [auth_digest:notice] [pid 17124] AH01757: generating secret for digest authentication ...
+[Fri Oct 31 15:56:30.753378 2014] [lbmethod_heartbeat:notice] [pid 17124] AH02282: No slotmem from mod_heartmonitor
+[Fri Oct 31 15:56:31.092582 2014] [mpm_prefork:notice] [pid 17124] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Oct 31 15:56:31.092676 2014] [core:notice] [pid 17124] AH00094: Command line: 'httpd -f /var/www/html/group16/pa4_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Oct 31 16:58:52.197048 2014] [mpm_prefork:notice] [pid 17124] AH00169: caught SIGTERM, shutting down
+[Fri Oct 31 16:58:53.929162 2014] [auth_digest:notice] [pid 18138] AH01757: generating secret for digest authentication ...
+[Fri Oct 31 16:58:53.930370 2014] [lbmethod_heartbeat:notice] [pid 18138] AH02282: No slotmem from mod_heartmonitor
+[Fri Oct 31 16:58:54.366116 2014] [mpm_prefork:notice] [pid 18138] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Oct 31 16:58:54.366206 2014] [core:notice] [pid 18138] AH00094: Command line: 'httpd -f /var/www/html/group16/pa4_z7o0l26s9k9/php/conf/httpd.conf'
+[Sun Nov 30 19:53:08.800631 2014] [auth_digest:notice] [pid 15420] AH01757: generating secret for digest authentication ...
+[Sun Nov 30 19:53:08.826073 2014] [lbmethod_heartbeat:notice] [pid 15420] AH02282: No slotmem from mod_heartmonitor
+[Sun Nov 30 19:53:09.763596 2014] [core:warn] [pid 15420] AH00098: pid file /var/www/html/group16/pa6_z7o0l26s9k9/php/run/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Sun Nov 30 19:53:09.786614 2014] [mpm_prefork:notice] [pid 15420] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Sun Nov 30 19:53:09.786694 2014] [core:notice] [pid 15420] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Sun Nov 30 19:53:16.099903 2014] [mpm_prefork:notice] [pid 15420] AH00169: caught SIGTERM, shutting down
+[Sun Nov 30 19:53:19.556622 2014] [auth_digest:notice] [pid 15429] AH01757: generating secret for digest authentication ...
+[Sun Nov 30 19:53:19.557812 2014] [lbmethod_heartbeat:notice] [pid 15429] AH02282: No slotmem from mod_heartmonitor
+[Sun Nov 30 19:53:19.591302 2014] [mpm_prefork:notice] [pid 15429] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Sun Nov 30 19:53:19.591378 2014] [core:notice] [pid 15429] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'

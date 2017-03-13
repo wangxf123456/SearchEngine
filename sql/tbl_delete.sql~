@@ -1,0 +1,5 @@
+drop table Contain;
+drop table User;
+drop table Album;
+drop table Photo;
+drop table Counter;

@@ -1,0 +1,351 @@
+#include "Index_server.h"
+
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <pthread.h>
+#include <sstream>
+#include <cmath>
+#include <unordered_map>
+#include <algorithm>
+#include <string>
+
+#include "mongoose.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::ostream;
+using std::ostringstream;
+using std::string;
+using std::vector;
+
+namespace {
+    int handle_request(mg_connection *);
+    int get_param(const mg_request_info *, const char *, string&);
+    string get_param(const mg_request_info *, const char *);
+    string to_json(const vector<Query_hit>&);
+
+    ostream& operator<< (ostream&, const Query_hit&);
+}
+
+pthread_mutex_t mutex;
+
+bool compareFunction(Query_hit a, Query_hit b){
+    return a.score > b.score;
+}
+
+// Runs the index server on the supplied port number.
+void Index_server::run(int port)
+{
+    // List of options. Last element must be NULL
+    ostringstream port_os;
+    port_os << port;
+    string ps = port_os.str();
+    const char *options[] = {"listening_ports",ps.c_str(),0};
+
+    // Prepare callback structure. We have only one callback, the rest are NULL.
+    mg_callbacks callbacks;
+    memset(&callbacks, 0, sizeof(callbacks));
+    callbacks.begin_request = handle_request;
+
+    // Initialize the global mutex lock that effectively makes this server
+    // single-threaded.
+    pthread_mutex_init(&mutex, 0);
+
+    // Start the web server
+    mg_context *ctx = mg_start(&callbacks, this, options);
+    if (!ctx) {
+        cerr << "Error starting server." << endl;
+        return;
+    }
+
+    pthread_exit(0);
+}
+
+//the in-memory storage for the index data info
+std::unordered_map<std::string, std::unordered_map<std::string, DataInfo> > Dataspace;
+std::unordered_map<std::string,double> IDFContainer;
+std::unordered_map<std::string,double> page_rank_container;
+std::unordered_map<std::string,bool> stopContainer;
+
+// Load index data from the file of the given name.
+void Index_server::init(ifstream& infile1, ifstream& infile2)
+{
+    // Fill in this method to load the inverted index from disk.
+    std::string infoStorage;
+    ifstream total_doc;
+     cout<<"begin to read file 1"<<endl;
+    while(getline(infile1,infoStorage)){
+
+        std::stringstream streamStorage;
+
+
+        for (unsigned int i = 0; i < infoStorage.size(); ++i) {
+            if (infoStorage[i] == ':') {
+                infoStorage.replace(i, 1, " ");
+            }
+        }
+
+        streamStorage.str(infoStorage);
+
+        std::string word;
+        double score;
+        int df;
+
+        std::string docID;
+        streamStorage >> word >> df;
+        // cout << word << " ";
+        for (int i = 0; i < df; ++i) {
+            streamStorage >> docID >> score;
+            DataInfo dataStorage;
+            dataStorage.score = score;
+            // cout << docID << score << " ";
+            dataStorage.df = df;
+            Dataspace[docID][word] = dataStorage;
+            
+        }
+        // cout << endl;
+    }
+
+    int total = Dataspace.size();
+    for (auto &x: Dataspace) {
+        for (auto &y: x.second) {
+            y.second.idf = log10(total / y.second.df);
+            IDFContainer[y.first] = y.second.idf;
+        }
+    }
+	cout<<"end read file 1"<<endl;
+     cout<<"begin to read file 2"<<endl;
+    while(infile2.good()) {
+
+        std::string tempString;
+        std::string doc_id;
+        double page_rank = 0;
+        getline(infile2, tempString);
+        for (unsigned int i = 0; i < tempString.size(); ++i) {
+            if (tempString[i] == ',') {
+                tempString.replace(i, 1, " ");
+            }
+        }
+        std::istringstream tempStringStream(tempString); 
+        tempStringStream >> doc_id >> page_rank;
+	//cout <<doc_id << " " << page_rank << endl;
+        page_rank_container[doc_id] = page_rank;
+    }
+
+    ifstream input;
+    input.open("stop_words.txt");
+    while(input.good()) {
+        std::string tempString;
+        getline(input, tempString);
+        stopContainer[tempString] = true;
+    }
+
+    input.close();
+    cout << "finish reading files" << endl;
+}
+
+// Search the index for documents matching the query. The results are to be
+// placed in the supplied "hits" vector, which is guaranteed to be empty when
+// this method is called.
+void Index_server::process_query(const string& query, vector<Query_hit>& hits, double w)
+{
+    string realQuery = query;
+    static const char arr[] = {'(', ')', ',', '!', '/', '&', ':', '-', '#', '"'};
+    vector<char> punctuations(arr, arr + sizeof(arr) / sizeof(arr[0]) );
+
+    transform(realQuery.begin(), realQuery.end(), realQuery.begin(), ::tolower);
+
+    for (unsigned int i = 0; i < punctuations.size(); ++i) {
+        std::replace(realQuery.begin(),realQuery.end(), punctuations[i], ' ');
+    }
+    cout << "Processing query '" << realQuery << "'" << " w: " << w << endl;
+
+    // Fill this in to process queries.
+    std::unordered_map<std::string,double> wordInQuery;
+    std::stringstream queryStream;
+    queryStream.str(realQuery);
+    while(queryStream.good()){
+        std::string word;
+        queryStream>>word;
+        wordInQuery[word] +=1;
+    }
+
+    for(auto temp = wordInQuery.begin(); temp != wordInQuery.end(); temp++){
+        cout<<temp->first<<" "<<temp->second<<endl;
+    }
+
+    double queryVectorNF = 0;
+    for(std::unordered_map<std::string,double>::iterator iter = wordInQuery.begin(); 
+        iter != wordInQuery.end(); iter++){
+        queryVectorNF += pow(iter->second * IDFContainer[iter->first],2);
+    }
+
+    queryVectorNF = sqrt(queryVectorNF);
+
+    for(std::unordered_map<std::string, std::unordered_map<std::string, DataInfo> >::iterator 
+        iter = Dataspace.begin();
+        iter != Dataspace.end(); iter++){
+
+        double finalScore = 0;
+        double last_score = 0;
+        const char* docID = iter->first.c_str();
+        std::unordered_map<std::string, DataInfo> docData = iter->second;
+
+        for(std::unordered_map<std::string,double>::iterator queryIter = wordInQuery.begin(); 
+            queryIter != wordInQuery.end(); queryIter++){
+            
+            double simularity = 0;
+            string word = queryIter->first;
+            double querytf = queryIter->second;
+
+            if(docData.find(word) != docData.end()) {
+                DataInfo docDataInfo = docData[word];
+                double idf = docDataInfo.idf;
+                double score = docDataInfo.score;
+                simularity = querytf * idf * score;
+                simularity /= queryVectorNF;
+                finalScore += simularity;
+            } else if(docData.find(word) == docData.end() && stopContainer.find(word) == stopContainer.end()){
+                finalScore = 0;
+                break;
+            }
+
+        }
+
+        //cout << "score: " << last_score << endl;
+        string doc_id_str = docID;
+	if (finalScore != 0) { 
+       		last_score = w * page_rank_container[doc_id_str] + (1 - w) * finalScore;
+	}
+        if(last_score != 0){
+            Query_hit hitDoc(docID, last_score);
+            hits.push_back(hitDoc);
+        }
+    }
+
+    std::sort(hits.begin(), hits.end(), compareFunction);   
+    for (int i = 0; i < hits.size(); i++) {
+    	cout << hits[i].id << " " << hits[i].score << endl;
+    }
+}
+
+namespace {
+    int handle_request(mg_connection *conn)
+    {
+        const mg_request_info *request_info = mg_get_request_info(conn);
+
+        cout << "handle request " << request_info->query_string << endl;
+        if (!strcmp(request_info->request_method, "GET") && request_info->query_string) {
+		cout << "in" << endl;
+            // Make the processing of each server request mutually exclusive with
+            // processing of other requests.
+
+            // Retrieve the request form data here and use it to call search(). Then
+            // pass the result of search() to to_json()... then pass the resulting string
+            // to mg_printf.
+            string query;
+            string w_str;
+	    double w = 0;
+
+            if (get_param(request_info, "q", query) == -1) {
+                // If the request doesn't have the "q" field, this is not an index
+                // query, so ignore it.
+                cout << "no q" << endl;
+                return 1;
+            }
+	    int pos = 0;
+	    for (int i = 0; i < query.size(); i++) {
+	    	if (query[i] == ' ') {
+			pos = i;
+			break;		
+		}
+	    }
+	    w_str = query.substr(0, pos);
+	    cout << "gg " << query << endl;
+	    w = stof(w_str);
+	    query = query.substr(pos + 1);
+            vector<Query_hit> hits;
+            Index_server *server = static_cast<Index_server *>(request_info->user_data);
+
+            pthread_mutex_lock(&mutex);
+            server->process_query(query, hits, w);
+            pthread_mutex_unlock(&mutex);
+
+            string response_data = to_json(hits);
+            int response_size = response_data.length();
+
+            // Send HTTP reply to the client.
+            mg_printf(conn,
+                      "HTTP/1.1 200 OK\r\n"
+                      "Content-Type: application/json\r\n"
+                      "Content-Length: %d\r\n"
+                      "\r\n"
+                      "%s", response_size, response_data.c_str());
+        }
+
+        // Returning non-zero tells mongoose that our function has replied to
+        // the client, and mongoose should not send client any more data.
+        return 1;
+    }
+
+    int get_param(const mg_request_info *request_info, const char *name, string& param)
+    {
+        const char *get_params = request_info->query_string;
+        size_t params_size = strlen(get_params);
+
+        // On the off chance that operator new isn't thread-safe.
+        pthread_mutex_lock(&mutex);
+        char *param_buf = new char[params_size + 1];
+        pthread_mutex_unlock(&mutex);
+
+        param_buf[params_size] = '\0';
+        int param_length = mg_get_var(get_params, params_size, name, param_buf, params_size);
+        if (param_length < 0) {
+            return param_length;
+        }
+
+        // Probably not necessary, just a precaution.
+        param = param_buf;
+        delete[] param_buf;
+
+        return 0;
+    }
+
+    // Converts the supplied query hit list into a JSON string.
+    string to_json(const vector<Query_hit>& hits)
+    {
+        ostringstream os;
+        os << "{\"hits\":[";
+        vector<Query_hit>::const_iterator viter;
+        for (viter = hits.begin(); viter != hits.end(); ++viter) {
+            if (viter != hits.begin()) {
+                os << ",";
+            }
+
+            os << *viter;
+        }
+        os << "]}";
+
+        return os.str();
+    }
+
+    // Outputs the computed information for a query hit in a JSON format.
+    ostream& operator<< (ostream& os, const Query_hit& hit)
+    {
+        os << "{" << "\"id\":\"";
+        int id_size = strlen(hit.id);
+        for (int i = 0; i < id_size; i++) {
+            if (hit.id[i] == '"') {
+                os << "\\";
+            }
+            os << hit.id[i];
+        }
+        return os << "\"," << "\"score\":" << hit.score << "}";
+    }
+}
+

@@ -1,0 +1,61 @@
+[Fri Dec 05 13:08:13.012497 2014] [auth_digest:notice] [pid 1875] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:08:13.012683 2014] [auth_digest:error] [pid 1875] (13)Permission denied: AH01762: Failed to create shared memory segment on file /run/httpd/authdigest_shm.1875
+[Fri Dec 05 13:08:13.012711 2014] [auth_digest:error] [pid 1875] (13)Permission denied: AH01760: failed to initialize shm - all nonce-count checking, one-time nonces, and MD5-sess algorithm disabled
+[Fri Dec 05 13:08:13.012718 2014] [:emerg] [pid 1875] AH00020: Configuration Failed, exiting
+[Fri Dec 05 13:08:46.806778 2014] [auth_digest:notice] [pid 1883] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:08:46.806938 2014] [auth_digest:error] [pid 1883] (13)Permission denied: AH01762: Failed to create shared memory segment on file /run/httpd/authdigest_shm.1883
+[Fri Dec 05 13:08:46.806966 2014] [auth_digest:error] [pid 1883] (13)Permission denied: AH01760: failed to initialize shm - all nonce-count checking, one-time nonces, and MD5-sess algorithm disabled
+[Fri Dec 05 13:08:46.806974 2014] [:emerg] [pid 1883] AH00020: Configuration Failed, exiting
+[Fri Dec 05 13:26:12.721484 2014] [auth_digest:notice] [pid 2361] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:26:12.779993 2014] [lbmethod_heartbeat:notice] [pid 2361] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 13:26:12.861369 2014] [core:warn] [pid 2361] AH00098: pid file /var/www/html/group16/pa6_z7o0l26s9k9/php/run/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Fri Dec 05 13:26:12.887035 2014] [mpm_prefork:notice] [pid 2361] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 13:26:12.887102 2014] [core:notice] [pid 2361] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 13:26:45.707964 2014] [mpm_prefork:notice] [pid 2361] AH00173: SIGHUP received.  Attempting to restart
+[Fri Dec 05 13:26:45.751932 2014] [auth_digest:notice] [pid 2361] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:26:45.753030 2014] [lbmethod_heartbeat:notice] [pid 2361] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 13:26:45.784951 2014] [mpm_prefork:notice] [pid 2361] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 13:26:45.785007 2014] [core:notice] [pid 2361] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 13:27:52.068531 2014] [mpm_prefork:notice] [pid 2361] AH00169: caught SIGTERM, shutting down
+[Fri Dec 05 13:28:18.395398 2014] [auth_digest:notice] [pid 2485] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:28:18.396709 2014] [lbmethod_heartbeat:notice] [pid 2485] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 13:28:18.431351 2014] [mpm_prefork:notice] [pid 2485] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 13:28:18.431411 2014] [core:notice] [pid 2485] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 13:33:03.388840 2014] [mpm_prefork:notice] [pid 2485] AH00173: SIGHUP received.  Attempting to restart
+[Fri Dec 05 13:33:03.431872 2014] [auth_digest:notice] [pid 2485] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:33:03.432955 2014] [lbmethod_heartbeat:notice] [pid 2485] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 13:33:03.464568 2014] [mpm_prefork:notice] [pid 2485] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 13:33:03.464628 2014] [core:notice] [pid 2485] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 13:33:29.578283 2014] [mpm_prefork:notice] [pid 2485] AH00169: caught SIGTERM, shutting down
+[Fri Dec 05 13:34:52.147671 2014] [auth_digest:notice] [pid 2754] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 13:34:52.148981 2014] [lbmethod_heartbeat:notice] [pid 2754] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 13:34:52.182470 2014] [mpm_prefork:notice] [pid 2754] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 13:34:52.182530 2014] [core:notice] [pid 2754] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 14:00:05.077846 2014] [core:notice] [pid 2754] AH00051: child pid 2776 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 14:00:05.143361 2014] [mpm_prefork:notice] [pid 2754] AH00169: caught SIGTERM, shutting down
+[Fri Dec 05 14:00:06.089862 2014] [auth_digest:notice] [pid 4377] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 14:00:06.091206 2014] [lbmethod_heartbeat:notice] [pid 4377] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 14:00:06.802428 2014] [mpm_prefork:notice] [pid 4377] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 14:00:06.802513 2014] [core:notice] [pid 4377] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 15:02:22.732546 2014] [core:notice] [pid 4377] AH00052: child pid 4384 exit signal Segmentation fault (11)
+[Fri Dec 05 15:02:22.758287 2014] [core:notice] [pid 4377] AH00052: child pid 5316 exit signal Segmentation fault (11)
+[Fri Dec 05 15:02:23.759497 2014] [core:warn] [pid 4377] AH00045: child process 4378 still did not exit, sending a SIGTERM
+[Fri Dec 05 15:02:23.759680 2014] [core:notice] [pid 4377] AH00051: child pid 5252 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:02:23.759693 2014] [core:warn] [pid 4377] AH00045: child process 5308 still did not exit, sending a SIGTERM
+[Fri Dec 05 15:02:23.759722 2014] [core:notice] [pid 4377] AH00051: child pid 5319 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:02:25.761787 2014] [core:warn] [pid 4377] AH00045: child process 4378 still did not exit, sending a SIGTERM
+[Fri Dec 05 15:02:25.761850 2014] [core:warn] [pid 4377] AH00045: child process 5308 still did not exit, sending a SIGTERM
+[Fri Dec 05 15:02:27.081796 2014] [core:notice] [pid 4377] AH00051: child pid 4378 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:02:27.081906 2014] [core:notice] [pid 4377] AH00051: child pid 5308 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:02:27.100475 2014] [mpm_prefork:notice] [pid 4377] AH00169: caught SIGTERM, shutting down
+[Fri Dec 05 15:02:27.484598 2014] [auth_digest:notice] [pid 5759] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 15:02:27.485928 2014] [lbmethod_heartbeat:notice] [pid 5759] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 15:02:27.771656 2014] [mpm_prefork:notice] [pid 5759] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 15:02:27.771785 2014] [core:notice] [pid 5759] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
+[Fri Dec 05 15:09:31.798512 2014] [core:notice] [pid 5759] AH00051: child pid 5760 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:09:32.799615 2014] [core:notice] [pid 5759] AH00051: child pid 5904 exit signal Segmentation fault (11), possible coredump in /etc/httpd
+[Fri Dec 05 15:09:32.799759 2014] [mpm_prefork:notice] [pid 5759] AH00169: caught SIGTERM, shutting down
+[Fri Dec 05 15:09:33.289348 2014] [auth_digest:notice] [pid 6255] AH01757: generating secret for digest authentication ...
+[Fri Dec 05 15:09:33.290738 2014] [lbmethod_heartbeat:notice] [pid 6255] AH02282: No slotmem from mod_heartmonitor
+[Fri Dec 05 15:09:33.328888 2014] [mpm_prefork:notice] [pid 6255] AH00163: Apache/2.4.10 (Fedora) PHP/5.5.16 configured -- resuming normal operations
+[Fri Dec 05 15:09:33.328968 2014] [core:notice] [pid 6255] AH00094: Command line: 'httpd -f /var/www/html/group16/pa6_z7o0l26s9k9/php/conf/httpd.conf'
